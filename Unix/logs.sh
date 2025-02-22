@@ -134,6 +134,8 @@ show_logs() {
     echo "===== /var/log/secure ====="
     tail -n 15 /var/log/secure
     echo ""
+
+    sleep 3
 }
 
 
@@ -152,6 +154,8 @@ filter_logs() {
     echo "===== /var/log/secure (Filtered) ====="
     tail -n 15 /var/log/secure | grep --color=auto -i "$keyword"
     echo ""
+
+    sleep 3
 }
 
 func_exit(){
