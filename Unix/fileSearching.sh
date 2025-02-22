@@ -146,8 +146,10 @@ search_file() {
     if [ "$count" -gt 0 ]; then
         echo -e "Archivos encontrados ($count):"
         echo "$results"
+        sleep 3
     else
         echo -e "No se encontraron archivos."
+        sleep 1
     fi
 }
 
@@ -161,8 +163,10 @@ search_word_in_file() {
         grep -n --color=auto "$word" "$file"
         count=$(grep -o "$word" "$file" | wc -l)
         echo -e "Total apariciones: $count"
+        sleep 3
     else
         echo -e "El archivo no existe."
+        sleep 1
     fi
 }
 
@@ -172,8 +176,10 @@ search_file_and_word() {
     read file
     if [ -f "$file" ]; then
         search_word_in_file "$file"
+        sleep 3
     else
         echo -e "El archivo no existe."
+        sleep 1
     fi
 }
 
@@ -183,8 +189,10 @@ count_lines() {
     if [ -f "$file" ]; then
         lines=$(wc -l < "$file")
         echo -e "Total de líneas: $lines"
+        sleep 3
     else
         echo -e "El archivo no existe."
+        sleep 1
     fi
 }
 
@@ -195,8 +203,10 @@ show_head_lines() {
         echo -ne "Ingrese el número de líneas a mostrar: "
         read n
         head -n "$n" "$file"
+        sleep 3
     else
         echo -e "El archivo no existe."
+        sleep 1
     fi
 }
 
@@ -207,8 +217,10 @@ show_tail_lines() {
         echo -ne "Ingrese el número de líneas a mostrar: "
         read n
         tail -n "$n" "$file"
+        sleep 3
     else
         echo -e "El archivo no existe."
+        sleep 1
     fi
 }
 
