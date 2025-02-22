@@ -158,26 +158,31 @@ set_directory() {
 sort_most_recent() {
     echo -e "\e[1;32m Ordenando por archivos más recientes... \e[0m"
     ls -lt "$BASE_DIR"
+    sleep 3
 }
 
 sort_oldest() {
     echo -e "\e[1;32m Ordenando por archivos más antiguos... \e[0m"
     ls -ltr "$BASE_DIR"
+    sleep 3
 }
 
 sort_size_desc() {
     echo -e "\e[1;32m Ordenando por tamaño (mayor a menor)... \e[0m"
     ls -lS "$BASE_DIR"
+    sleep 3
 }
 
 sort_size_asc() {
     echo -e "\e[1;32m Ordenando por tamaño (menor a mayor)... \e[0m"
     ls -lSr "$BASE_DIR"
+    sleep 3
 }
 
 sort_by_type() {
     echo -e "\e[1;32m Agrupando por tipo de archivo... \e[0m"
     ls -l "$BASE_DIR" | awk '{print $1, $9}'
+    sleep 3
 }
 
 filter_starts_with() {
@@ -185,6 +190,7 @@ filter_starts_with() {
     read cadena
     echo -e "\e[1;32m Filtrando archivos que empiezan con '$cadena'... \e[0m"
     ls -1 "$BASE_DIR" | grep "^$cadena"
+    sleep 3
 }
 
 filter_ends_with() {
@@ -192,6 +198,7 @@ filter_ends_with() {
     read cadena
     echo -e "\e[1;32m Filtrando archivos que terminan con '$cadena'... \e[0m"
     ls -1 "$BASE_DIR" | grep "$cadena$"
+    sleep 3
 }
 
 filter_contains() {
@@ -199,6 +206,7 @@ filter_contains() {
     read cadena
     echo -e "\e[1;32m Filtrando archivos que contienen '$cadena'... \e[0m"
     ls -l "$BASE_DIR" | grep "$cadena"
+    sleep 3
 }
 
 func_exit(){
