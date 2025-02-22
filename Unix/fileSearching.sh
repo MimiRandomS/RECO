@@ -14,7 +14,7 @@ show_menu() {
     echo -e "\e[1;32m║ 6) Mostrar últimas N líneas                    ║\e[0m"
     echo -e "\e[1;31m║ 7) Salir                                       ║\e[0m"
     echo -e "\e[1;36m╚══════════════════════════════════════════════════╝\e[0m"
-    echo -ne "\e[1;36mSeleccione una opción: \e[0m"
+    echo -e "Seleccione una opción: "
 }
 
 ascci_art_1(){
@@ -123,89 +123,98 @@ logic() {
             5) show_head_lines ;;
             6) show_tail_lines ;;
             7) func_exit ;;
-            *) echo -e "\e[1;31mOpción no válida.\e[0m" ;;
+            *) echo -e "Opción no válida." ;;
         esac
-        echo -e "\n\e[1;36mPresione Enter para continuar...\e[0m"
+        echo -e "\nPresione Enter para continuar..."
         read -r
     done
 }
 
 search_file() {
-    echo -ne "\e[1;36mIngrese el nombre o parte del archivo a buscar: \e[0m"
+    echo -e "Ingrese la ruta donde desea buscar (o presione Enter para usar la ruta actual): "
+    read BASE_DIR
+    if [ -z "$BASE_DIR" ]; then
+        BASE_DIR=$(pwd)
+    fi
+
+    echo -e "Ingrese el nombre del archivo a buscar: "
     read filename
+
     results=$(find "$BASE_DIR" -type f -iname "*$filename*")
     count=$(echo "$results" | wc -l)
+
     if [ "$count" -gt 0 ]; then
-        echo -e "\e[1;32mArchivos encontrados ($count):\e[0m"
+        echo -e "Archivos encontrados ($count):"
         echo "$results"
     else
-        echo -e "\e[1;31mNo se encontraron archivos.\e[0m"
+        echo -e "No se encontraron archivos."
     fi
 }
 
+
 search_word_in_file() {
-    echo -ne "\e[1;36mIngrese el archivo donde buscar: \e[0m"
+    echo -e "Ingrese ruta del archivo donde buscar: "
     read file
     if [ -f "$file" ]; then
-        echo -ne "\e[1;36mIngrese la palabra a buscar: \e[0m"
+        echo -e "Ingrese la palabra a buscar: "
         read word
         grep -n --color=auto "$word" "$file"
         count=$(grep -o "$word" "$file" | wc -l)
-        echo -e "\e[1;32mTotal apariciones: $count\e[0m"
+        echo -e "Total apariciones: $count"
     else
-        echo -e "\e[1;31mEl archivo no existe.\e[0m"
+        echo -e "El archivo no existe."
     fi
 }
 
 search_file_and_word() {
     search_file
-    echo -ne "\e[1;36mSeleccione un archivo de la lista anterior: \e[0m"
+    echo -e "Seleccione un archivo de la lista anterior: "
     read file
     if [ -f "$file" ]; then
         search_word_in_file "$file"
     else
-        echo -e "\e[1;31mEl archivo no existe.\e[0m"
+        echo -e "El archivo no existe."
     fi
 }
 
 count_lines() {
-    echo -ne "\e[1;36mIngrese el archivo: \e[0m"
+    echo -ne "Ingrese ruta del archivo: "
     read file
     if [ -f "$file" ]; then
         lines=$(wc -l < "$file")
-        echo -e "\e[1;32mTotal de líneas: $lines\e[0m"
+        echo -e "Total de líneas: $lines"
     else
-        echo -e "\e[1;31mEl archivo no existe.\e[0m"
+        echo -e "El archivo no existe."
     fi
 }
 
 show_head_lines() {
-    echo -ne "\e[1;36mIngrese el archivo: \e[0m"
+    echo -e "Ingrese ruta del archivo: "
     read file
     if [ -f "$file" ]; then
-        echo -ne "\e[1;36mIngrese el número de líneas a mostrar: \e[0m"
+        echo -ne "Ingrese el número de líneas a mostrar: "
         read n
         head -n "$n" "$file"
     else
-        echo -e "\e[1;31mEl archivo no existe.\e[0m"
+        echo -e "El archivo no existe."
     fi
 }
 
 show_tail_lines() {
-    echo -ne "\e[1;36mIngrese el archivo: \e[0m"
+    echo -ne "Ingrese ruta del archivo: "
     read file
     if [ -f "$file" ]; then
-        echo -ne "\e[1;36mIngrese el número de líneas a mostrar: \e[0m"
+        echo -ne "Ingrese el número de líneas a mostrar: "
         read n
         tail -n "$n" "$file"
     else
-        echo -e "\e[1;31mEl archivo no existe.\e[0m"
+        echo -e "El archivo no existe."
     fi
 }
 
 func_exit(){
     ascci_art_2
-    echo -e "\e[1;31m Saliendo... \e[0m"
+    echo -e "Saliendo... "
     exit 0
 }
 
