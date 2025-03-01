@@ -1,4 +1,6 @@
-#!/usr/pkg/bin/bash
+#!/usr/bin/env bash
+
+
 
 if [ "$#" -lt 2 ]; then
     echo "Uso: $0 '<frecuencia>' '<comando>'"
