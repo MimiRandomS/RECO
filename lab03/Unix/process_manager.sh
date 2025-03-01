@@ -110,6 +110,7 @@ ascci_art_2(){
 show_processes() {
     echo -e "\e[1;32mProcesos en ejecución:\e[0m"
     ps -eo pid,%mem,%cpu,cmd --sort=-%cpu | head -20
+    sleep 3
 }
 
 # Función para buscar un proceso por nombre
@@ -117,6 +118,7 @@ search_process() {
     read -rp "Ingrese el nombre del proceso: " process_name
     echo -e "\e[1;34mBuscando el proceso '$process_name'...\e[0m"
     ps aux | grep -i "$process_name" | grep -v "grep"
+    sleep 3
 }
 
 # Función para terminar un proceso por PID
@@ -124,8 +126,10 @@ kill_process() {
     read -rp "Ingrese el PID del proceso a terminar: " pid
     if kill "$pid"; then
         echo -e "\e[1;31mProceso $pid terminado correctamente.\e[0m"
+        sleep 1
     else
         echo -e "\e[1;31mError al terminar el proceso $pid.\e[0m"
+        sleep 1
     fi
 }
 
@@ -135,10 +139,12 @@ restart_process() {
     process_cmd=$(ps -p "$pid" -o cmd --no-headers)
     if [ -z "$process_cmd" ]; then
         echo -e "\e[1;31mNo se encontró el proceso con PID $pid.\e[0m"
+        sleep 1
         return
     fi
     kill "$pid" && sleep 2 && eval "$process_cmd" &
     echo -e "\e[1;32mProceso $pid reiniciado correctamente.\e[0m"
+    sleep 1
 }
 
 func_exit(){
