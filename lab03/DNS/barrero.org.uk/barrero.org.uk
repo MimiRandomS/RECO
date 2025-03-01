@@ -1,0 +1,27 @@
+$TTL 3600
+@ IN SOA barrero.org.uk. hostmaster.barrero.org.uk. (
+    2025021802  ; Serial
+    3600        ; Refresh
+    600         ; Retry
+    1209600     ; Expire
+    86400 )     ; Minimum
+
+@ IN NS barrero.org.uk.
+
+barrero.org.uk. IN A 10.2.77.250
+
+; Configuración IPv6
+martinez IN AAAA ::ffff:a02:4dfb
+carlos IN AAAA ::ffff:a02:4dfa
+
+; Servidor de correo
+barrero.org.uk. IN MX 10 mail.barrero.org.uk.
+
+; Direcciones canónicas (A records)
+www IN A 10.2.77.251
+files IN A 10.2.77.250
+mail IN A 10.2.77.247
+
+; Alias (CNAME)
+correo IN CNAME mail.barrero.org.uk.
+archivos IN CNAME files.barrero.org.uk.

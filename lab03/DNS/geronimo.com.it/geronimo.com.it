@@ -1,0 +1,31 @@
+
+$TTL 3600
+@   IN  SOA  geronimo.com.it. hostmaster.geronimo.com.it. (
+        1999012100  ; Serial
+        3600        ; Refresh
+        300         ; Retry
+        3600000     ; Expire
+        3600       ; Minimum
+)
+
+@   IN  NS  geronimo.com.it.
+
+; Dirección del dominio principal
+geronimo.com.it.  IN  A    10.2.77.251
+geronimo.com.it.  IN  AAAA ::ffff:a02:4dfb
+
+; Configuración del servidor de correo
+geronimo.com.it.  IN  MX  10 mail.geronimo.com.it.
+
+; Direcciones para IPv6
+martinez  	  IN  AAAA  ::ffff:a02:4dfb
+carlos    	  IN  AAAA  ::ffff:a02:4dfa
+
+; Registros A
+www   		  IN  A  10.2.77.251
+files 		  IN  A  10.2.77.250
+mail  		  IN  A  10.2.77.247
+
+; Alias con CNAME
+correo   	  IN  CNAME  mail.geronimo.com.it.
+archivos 	  IN  CNAME  files.geronimo.com.it.
