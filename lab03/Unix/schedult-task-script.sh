@@ -1,4 +1,6 @@
 #!/bin/sh
+#!/usr/pkg/bin/bash
+
 
 if [ "$#" -lt 2 ]; then
     echo "Uso: $0 '<frecuencia>' '<comando>'"

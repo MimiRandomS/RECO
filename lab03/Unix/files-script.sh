@@ -1,4 +1,5 @@
 #!/bin/bash
+#!/usr/pkg/bin/bash
 
 # Función para validar que los argumentos sean correctos
 validate_input() {

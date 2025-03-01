@@ -1,4 +1,6 @@
 #!/bin/bash
+#!/usr/pkg/bin/bash
+
 
 display_menu() {
     clear
