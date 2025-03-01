@@ -110,7 +110,10 @@ ascci_art_2(){
 # Función para mostrar procesos activos
 show_processes() {
     echo -e "\e[1;32mProcesos en ejecución:\e[0m"
+    # netBSD
+    # ps ax -o pid,pmem,pcpu,command | sort -k3 -r
     ps -eo pid,%mem,%cpu,cmd --sort=-%cpu | head -20
+    # slack
     sleep 3
 }
 
@@ -137,7 +140,10 @@ kill_process() {
 # Función para reiniciar un proceso por PID
 restart_process() {
     read -rp "Ingrese el PID del proceso a reiniciar: " pid
+    # process_cmd=$(ps -p "$pid" -o command=)
+    # netBSD
     process_cmd=$(ps -p "$pid" -o cmd --no-headers)
+    # slack
     if [ -z "$process_cmd" ]; then
         echo -e "\e[1;31mNo se encontró el proceso con PID $pid.\e[0m"
         sleep 1
