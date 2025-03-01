@@ -1,5 +1,5 @@
-#!/bin/sh
-#!/usr/pkg/bin/bash
+#!/usr/bin/env bash
+
 
 
 if [ "$#" -lt 2 ]; then
