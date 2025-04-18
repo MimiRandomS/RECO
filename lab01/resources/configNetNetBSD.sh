@@ -17,9 +17,11 @@ uni_domain=${uni_domain:-is.escuelaing.edu.co}
 echo "--- DNS para Universidad ---"
 read -p "¿Cuántos servidores DNS querés configurar para la universidad? " uni_dns_count
 uni_dns_text=""
-for i in $(seq 1 $uni_dns_count); do
+i=1
+while [ "$i" -le "$uni_dns_count" ]; do
   read -p "DNS #$i (Universidad): " dns
-  uni_dns_text="${uni_dns_text}nameserver $dns\n"
+  uni_dns_text="$uni_dns_text nameserver $dns\n"
+  i=$((i + 1))
 done
 
 echo "--- Configuración para red Externa ---"
@@ -33,9 +35,11 @@ ext_domain=${ext_domain:-localhost}
 echo "--- DNS para Red Externa ---"
 read -p "¿Cuántos servidores DNS querés configurar para la red externa? " ext_dns_count
 ext_dns_text=""
-for i in $(seq 1 $ext_dns_count); do
+i=1
+while [ "$i" -le "$ext_dns_count" ]; do
   read -p "DNS #$i (Externa): " dns
-  ext_dns_text="${ext_dns_text}nameserver $dns\n"
+  ext_dns_text="$ext_dns_text nameserver $dns\n"
+  i=$((i + 1))
 done
 
 read -p "Nombre de host (hostname) [NETBSD]: " hostname_val
@@ -47,7 +51,6 @@ iface=${iface:-wm0}
 echo "Generando script en /etc/configNet.sh ..."
 sleep 1
 
-# Escribir el script final
 cat > /etc/configNet.sh << EOF
 #!/bin/sh
 
