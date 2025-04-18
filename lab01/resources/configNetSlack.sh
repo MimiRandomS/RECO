@@ -43,7 +43,7 @@ hostname_val=${hostname_val:-SLACKWARE}
 read -p "Nombre de la interfaz de red activa [eth0]: " iface
 iface=${iface:-eth0}
 
-echo "Generando script en /etc/rc.d/configNet.sh ..."
+echo "Generando script de red /etc/rc.d/configNet.sh ..."
 sleep 1
 
 cat > /etc/rc.d/configNet.sh << EOF
@@ -86,9 +86,10 @@ echo "" > /etc/resolv.conf
 for dns in \$DNS_LIST; do
   echo "nameserver \$dns" >> /etc/resolv.conf
 done
+echo "" >> /etc/resolv.conf
 echo "domain \$DOMAIN" >> /etc/resolv.conf
 
-# Configurar el nombre de host
+# Configurar el hostname
 hostname "$hostname_val"
 
 # Log de la configuración
@@ -102,12 +103,45 @@ EOF
 
 chmod +x /etc/rc.d/configNet.sh
 
-if ! grep -q "/etc/rc.d/configNet.sh" /etc/rc.d/rc.local 2>/dev/null; then
-    echo "sh /etc/rc.d/configNet.sh" >> /etc/rc.d/rc.local
+echo "Generando script de servicio /etc/rc.d/rc.configNet ..."
+sleep 1
+
+cat > /etc/rc.d/rc.configNet << 'EOF'
+#!/bin/sh
+# Servicio para configurar la red en Slackware
+
+case "$1" in
+  start)
+    echo "Iniciando configuración de red..."
+    sh /etc/rc.d/configNet.sh
+    ;;
+  restart)
+    echo "Reiniciando configuración de red..."
+    sh /etc/rc.d/configNet.sh
+    ;;
+  stop)
+    echo "Este script de red no soporta stop. No se hace nada."
+    ;;
+  *)
+    echo "Uso: $0 {start|restart|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+EOF
+
+chmod +x /etc/rc.d/rc.configNet
+
+if ! grep -q "/etc/rc.d/rc.configNet start" /etc/rc.d/rc.local 2>/dev/null; then
+    echo "sh /etc/rc.d/rc.configNet start" >> /etc/rc.d/rc.local
     chmod +x /etc/rc.d/rc.local
-    echo "Script agregado a rc.local para ejecución automática al arrancar."
+    echo "Script agregado a rc.local para ejecución automática."
 else
     echo "Ya existía en rc.local, no se agregó de nuevo."
 fi
 
-echo "Todo listo."
+echo "Todo listo para Slackware."
+echo "Recordá que podés usar:"
+echo "  /etc/rc.d/rc.configNet start"
+echo "  /etc/rc.d/rc.configNet restart"

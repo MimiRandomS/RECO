@@ -24,7 +24,6 @@ while [ $i -le $uni_dns_count ]; do
   i=$((i+1))
 done
 
-# Configuración Externa
 echo "--- Configuración para red Externa ---"
 read -p "IP estática (Externa): " ext_ip
 read -p "Gateway (Externa): " ext_gw
@@ -43,7 +42,6 @@ while [ $i -le $ext_dns_count ]; do
   i=$((i+1))
 done
 
-# Hostname e Interfaz
 read -p "Nombre de host (hostname) [NETBSD]: " hostname_val
 hostname_val=${hostname_val:-NETBSD}
 
@@ -53,7 +51,6 @@ iface=${iface:-wm0}
 echo "Generando script de configuración de red en /etc/configNet.sh ..."
 sleep 1
 
-# Creamos /etc/configNet.sh
 cat > /etc/configNet.sh << EOF
 #!/bin/sh
 
@@ -105,7 +102,6 @@ EOF
 
 chmod +x /etc/configNet.sh
 
-# Ahora generamos el script de servicio en /etc/rc.d/configNet
 echo "Generando script de servicio en /etc/rc.d/configNet ..."
 sleep 1
 
