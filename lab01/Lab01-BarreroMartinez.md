@@ -306,7 +306,7 @@ Geronimo Martinez Nuñez - Carlos David Barrero
       - Activa la opción **"Configurar distribuciones"**.
       - Añade la distribución de teclado que prefieras, como **Español (Latinoamericano)** o **Español**.
       - (Opcional) Configura varios idiomas y asigna accesos rápidos para cambiar entre ellos.
-      
+
    ![Configuración de teclado - Paso 1](img/slackware8.png)  
    ![Configuración de teclado - Paso 2](img/slackware9.png)
 
@@ -684,19 +684,56 @@ Geronimo Martinez Nuñez - Carlos David Barrero
 
    3. Si quieres que el cambio sea permanente, puedes agregar el comando anterior a tu `~/.xsession`
 
-   ## Configuración del prompt para la terminal en NetBSD
 
-   Si deseas personalizar el prompt (`PS1`) en la terminal de NetBSD para que sea más informativo y visual, puedes agregar las siguientes líneas al archivo `~/.profile`.  
-   **Esta configuración aplica únicamente si estás utilizando el shell `ksh` (KornShell).**
 
-   ```bash
-   if [ "$(id -u)" -eq 0 ]; then
-      PS1='$(whoami)@$(hostname):$PWD# '
-   else
-      PS1='$(whoami)@$(hostname):$PWD$ '
-   fi
-   ```
+   ## Configuración del prompt en la terminal de NetBSD
 
+   Si deseas personalizar el **prompt** (`PS1`) en NetBSD para que sea más informativo y visual, puedes configurar los archivos de perfil de tu **shell**.
+
+   > **Nota:** Esta configuración aplica si estás utilizando **`ksh`** (KornShell).
+
+   ### ¿Qué archivos debes editar?
+
+   - `~/.profile`: Archivo de configuración para sesiones de login.
+   - `~/.kshrc`: Archivo de configuración para sesiones de shell interactivas.
+
+   ### Configuración paso a paso
+
+   1. **Indicar que `ksh` cargue `~/.kshrc` automáticamente**
+
+      Abre `~/.profile`:
+
+      ```bash
+      nano ~/.profile
+      ```
+
+      Y agrega al final la siguiente línea:
+
+      ```bash
+      export ENV="$HOME/.kshrc"
+      ```
+
+      Esto le dice a `ksh` que siempre cargue el archivo `~/.kshrc` al iniciar cualquier shell.
+
+   2. **Personalizar el prompt**
+
+      Crea o edita el archivo `~/.kshrc`:
+
+      ```bash
+      nano ~/.kshrc
+      ```
+
+      Y agrega el siguiente contenido:
+
+      ```bash
+      if [ "$(id -u)" -eq 0 ]; then
+         PS1='$(whoami)@$(hostname):$PWD# '
+      else
+         PS1='$(whoami)@$(hostname):$PWD$ '
+      fi
+      ```
+
+      Hacemos lo mismo para el archivo `~/.profile`
 
 * What files are generated during installation in each virtualization software, and what are their purposes?
    Durante la instalación, **VMware** genera varios archivos clave:
