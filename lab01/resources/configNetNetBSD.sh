@@ -2,11 +2,9 @@
 
 echo "== Instalador de Script de Red para NetBSD =="
 
-# Directorio de logs
 read -p "Ruta para guardar los logs [/var/log]: " logdir
 logdir=${logdir:-/var/log}
 
-# Configuración Universidad
 echo "--- Configuración para red de la Universidad ---"
 read -p "IP estática (Universidad): " uni_ip
 read -p "Gateway (Universidad) [10.2.65.1]: " uni_gw
@@ -18,10 +16,12 @@ uni_domain=${uni_domain:-is.escuelaing.edu.co}
 
 echo "--- DNS para Universidad ---"
 read -p "¿Cuántos servidores DNS querés configurar para la universidad? " uni_dns_count
-uni_dns_list=()
-for i in $(seq 1 $uni_dns_count); do
+uni_dns_list=""
+i=1
+while [ $i -le $uni_dns_count ]; do
   read -p "DNS #$i (Universidad): " dns
-  uni_dns_list+=("$dns")
+  uni_dns_list="$uni_dns_list $dns"
+  i=$((i+1))
 done
 
 # Configuración Externa
@@ -35,10 +35,12 @@ ext_domain=${ext_domain:-localhost}
 
 echo "--- DNS para Red Externa ---"
 read -p "¿Cuántos servidores DNS querés configurar para la red externa? " ext_dns_count
-ext_dns_list=()
-for i in $(seq 1 $ext_dns_count); do
+ext_dns_list=""
+i=1
+while [ $i -le $ext_dns_count ]; do
   read -p "DNS #$i (Externa): " dns
-  ext_dns_list+=("$dns")
+  ext_dns_list="$ext_dns_list $dns"
+  i=$((i+1))
 done
 
 # Hostname e Interfaz
@@ -72,14 +74,14 @@ if [ \$? -eq 0 ]; then
     GW="$uni_gw"
     MASK="$uni_mask"
     DOMAIN="$uni_domain"
-    DNS_LIST="${uni_dns_list[*]}"
+    DNS_LIST="$uni_dns_list"
 else
     NET="Externa"
     IP="$ext_ip"
     GW="$ext_gw"
     MASK="$ext_mask"
     DOMAIN="$ext_domain"
-    DNS_LIST="${ext_dns_list[*]}"
+    DNS_LIST="$ext_dns_list"
 fi
 
 # Configuración de red
@@ -131,14 +133,13 @@ EOF
 
 chmod +x /etc/rc.d/configNet
 
-# Sugerir al usuario que active el servicio
 echo "--------------------------------------------------"
 echo "Para que el servicio se ejecute al inicio, agregá en /etc/rc.conf:"
 echo ""
-echo "configNet_enable=\"YES\""
+echo 'configNet_enable="YES"'
 echo ""
 echo "Después podés usar:"
 echo "  service configNet start    # Para ejecutar manualmente"
 echo "--------------------------------------------------"
 
-echo "✅ Todo listo para NetBSD."
+echo "Todo listo para NetBSD."
