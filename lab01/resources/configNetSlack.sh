@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "== Configuración de creación de script de red =="
+
 read -p "Ruta para guardar los logs [/var/log]: " logdir
 logdir=${logdir:-/var/log}
 
@@ -40,8 +41,21 @@ done
 read -p "Nombre de host (hostname) [SLACKWARE]: " hostname_val
 hostname_val=${hostname_val:-SLACKWARE}
 
-read -p "Nombre de la interfaz de red activa [eth0]: " iface
-iface=${iface:-eth0}
+# Verificación de la interfaz de red
+while true; do
+  read -p "Nombre de la interfaz de red activa [eth0]: " iface
+  iface=${iface:-eth0}
+
+  if ip link show "$iface" > /dev/null 2>&1; then
+    echo "Interfaz '$iface' encontrada."
+    break
+  else
+    echo "¡Error! La interfaz '$iface' no existe."
+    echo "Estas son las interfaces de red disponibles:"
+    ip -o link show | awk -F': ' '{print "- " $2}'
+    echo "Por favor, ingresá una interfaz válida."
+  fi
+done
 
 echo "Generando script de red /etc/rc.d/configNet.sh ..."
 sleep 1
