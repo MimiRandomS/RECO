@@ -195,77 +195,7 @@ Geronimo Martinez Nuñez - Carlos David Barrero
    ```
 
    ## Configuración automatica de red
-   Dentro de este repositorio se creó el script `configNetSlack.sh`, el cual permite configurar automáticamente las direcciones IP dependiendo de si estás conectado a la red de la **Escuela de Ingeniería** o en una red **externa**.
-
-   Este script facilita el cambio rápido de configuración de red para adaptarse a diferentes entornos.
-
-   ### Uso del Script `configNetSlack.sh`
-   ### ¿Qué hace el script?
-
-   - Detecta automáticamente si tienes conectividad hacia la puerta de enlace de la Universidad.
-   - Configura la IP estática, máscara de red, gateway, dominio y servidores DNS correspondientes.
-   - Configura el nombre del host.
-   - Guarda un log diario de la configuración realizada.
-   - Si tienes entorno gráfico y `notify-send` instalado, mostrará una notificación.
-
-   ### ¿Cómo usarlo?
-   1. **Da permisos al script y ejecuta el script para generar `configNet.sh`:**
-   ```bash
-   chmod +x configNetSlack.sh
-   bash configNetSlack.sh
-   ```
-   2. **Durante la ejecución, el script te pedirá varios datos:**
-      - Ruta para guardar los logs (por defecto `/var/log`).
-      - Datos de red para la **Universidad** (IP, Gateway, Máscara, Dominio, DNS).
-      - Datos de red para la **Red Externa** (IP, Gateway, Máscara, Dominio, DNS).
-      - Nombre de la interfaz de red activa (por defecto `eth0`).
-      - Nombre del Hostname del equipo.
-   3. **El script generará automáticamente un nuevo archivo:**
-   ```bash
-   /etc/rc.d/configNet.sh
-   ```
-   Este archivo es el que configura la red cada vez que se arranca el sistema.
-
-   ### ¿Qué archivos se modifican o crean?
-
-   - `/etc/rc.d/configNet.sh` → Script que configura la red al arranque.
-   - `/etc/resolv.conf` → Se sobrescribe para actualizar los DNS.
-   - `/var/log/logip-YYYYMMDD.log` → Registro de configuraciones diarias (o en la ruta de logs que hayas definido).
-   - `/etc/rc.d/rc.local` → Se actualiza para llamar a `configNet.sh` automáticamente.
-
-   ### Ejemplo de flujo de configuración
-
-   Cuando corras `bash configNetSlack.sh`, verás algo como:
-
-   ``` bash
-   == Configuración de creación de script de red ==
-   Ruta para guardar los logs [/var/log]: 
-   --- Configuración para red de la Universidad ---
-   IP estática (Universidad): 10.2.77.250
-   Gateway (Universidad) [10.2.65.1]: 
-   Máscara de red (Universidad) [255.255.0.0]: 
-   Dominio (Universidad) [is.escuelaing.edu.co]: 
-   --- DNS para Universidad ---
-   ¿Cuántos servidores DNS querés configurar para la universidad? 2
-   DNS #1 (Universidad): 10.2.65.1
-   DNS #2 (Universidad): 8.8.8.8
-   --- Configuración para red Externa (Casa, etc.) ---
-   IP estática (Externa): 192.168.0.10
-   Gateway (Externa): 192.168.0.1
-   Máscara de red (Externa) [255.255.255.0]: 
-   Dominio (Externa) [localhost]: 
-   --- DNS para Red Externa ---
-   ¿Cuántos servidores DNS querés configurar para la red externa? 2
-   DNS #1 (Externa): 8.8.8.8
-   DNS #2 (Externa): 1.1.1.1
-   Nombre de host (hostname) [SLACKWARE]: slackhost
-   Nombre de la interfaz de red activa [eth0]: eth0
-   ```
-   ### Recomendaciones
-   - **Debes ejecutar el script como root** o con permisos de administrador, ya que necesita modificar archivos de sistema.
-   - Asegúrate de tener configurada correctamente la interfaz de red (por ejemplo, `eth0`, `enp0s3`, etc.).
-   - Puedes editar el script generado (`/etc/rc.d/configNet.sh`) manualmente si quieres personalizar más configuraciones.
-
+   > ⚠️ En creacion
 
    ## Configuración de la Interfaz Gráfica (KDE)
 
@@ -666,25 +596,78 @@ Geronimo Martinez Nuñez - Carlos David Barrero
    Ahora al iniciar sesión gráfica, se cargará automáticamente **MATE**.
 
 
-   ## Configuración de la distribución del teclado en el sistema gráfico
+   ## Configuración permanente de distribución de teclado en MATE en NetBSD
 
-   Una vez que tengas MATE instalado, es posible que el teclado esté en inglés. Para cambiarlo a español latinoamericano:
+   Cuando instalas MATE en NetBSD, es normal que el teclado quede inicialmente en distribución **estadounidense (us)**.  
+   Para cambiarlo a **latinoamericano (latam)** de forma correcta y permanente, sigue estos pasos:
 
-   1. Instala el paquete de configuraciones de teclado si es necesario:
+   ### 1. Instalar los paquetes necesarios
 
-   ```bash
-   pkgin install setxkbmap
+   Primero asegúrate de que tienes instalado el paquete que contiene las reglas de teclado:
+
+   ```sh
+   pkgin install xkeyboard-config
    ```
 
-   2. Luego, en tu sesión de MATE, puedes ejecutar:
+   ### 2. Configurar el cambio de teclado como permanente
 
-   ```bash
+   Para que el teclado siempre esté en español latinoamericano al iniciar tu sesión gráfica:
+
+   #### 3.1 Editar la configuración de Slim
+
+   Slim, el gestor de sesiones, necesita saber **qué archivo** ejecutar cuando haces login, y con **qué shell**.
+
+   Edita el archivo de configuración de Slim:
+
+   ```sh
+   nano /usr/pkg/etc/slim.conf
+   ```
+
+   Busca la línea que empieza con `login_cmd`.  
+   Por defecto puede estar comentada (`#`) o apuntando a `/etc/X11/xdm/Xsession`.
+
+   Debes **modificarla** para que apunte a tu `~/.xsession` y use **tu shell favorita**.  
+   Por ejemplo, si usas `ksh`, cámbiala a:
+
+   ```ini
+   login_cmd exec /bin/ksh - ~/.xsession %session
+   ```
+
+   > **Notas importantes:**
+   > - Si usas otra shell (por ejemplo `/bin/sh` o `/bin/bash`), cambia `/bin/ksh` por la que corresponda.
+   > - No olvides eliminar el `#` al principio si la línea estaba comentada.
+   > - El parámetro `-` después de la shell indica que se debe iniciar como **login shell**, para que lea los archivos de configuración correspondientes (como `.profile` si es necesario).
+
+   Guarda y cierra.
+
+   #### 3.2 Crear o editar el archivo `~/.xsession`
+
+   Crea o edita el archivo `.xsession` en tu directorio home:
+
+   ```sh
+   nano ~/.xsession
+   ```
+
+   Con el siguiente contenido:
+
+   ```sh
+   #!/bin/ksh
    setxkbmap -layout latam
+   exec mate-session
    ```
 
-   3. Si quieres que el cambio sea permanente, puedes agregar el comando anterior a tu `~/.xsession`
+   > **Nota:** Asegúrate que el `#!/bin/ksh` coincide con la shell que elegiste en `slim.conf`.
+   >  
+   > Ejemplos:
+   > - Para `sh`: `#!/bin/sh`
+   > - Para `bash`: `#!/bin/bash`
+   > - Para `ksh`: `#!/bin/ksh`
 
+   Después, haz que `.xsession` sea ejecutable:
 
+   ```sh
+   chmod +x ~/.xsession
+   ```
 
    ## Configuración del prompt en la terminal de NetBSD
 
@@ -756,10 +739,98 @@ Geronimo Martinez Nuñez - Carlos David Barrero
 
 * Create four users in each operating system and ensure the following:
    - Assign meaningful names, Provide each user with a meaningful description, Each user should have a home directory matching their username, located in the /usuarios directory at the root of the main file system.
-   - What is the file system? Which one did you use during installation? What are its characteristics?
-   - Create two groups: ”Accounting” and ”IT.”
-   - The first two users should belong exclusively to the ”Accounting” group, while the other two should be part of the ”IT” group.
+   ## Creación de usuarios en Slackware y NetBSD
 
+   Para ambos sistemas, el procedimiento de creación de usuarios es similar.
+
+   Antes de crear los usuarios, primero es necesario crear el directorio `/usuarios` y asignarle permisos adecuados:
+
+   ```bash
+   mkdir -p /usuarios
+   chmod 755 /usuarios
+   ```
+
+   Luego, para crear cada usuario utilizamos el comando `useradd`, especificando:
+
+   - Directorio home personalizado (`-d`).
+   - Descripción o comentario (`-c`).
+   - Shell de inicio (`-s`).
+   - Grupo primario (`-g`).
+
+   Finalmente, se asigna una contraseña:
+
+   ```bash
+   useradd -m -d /usuarios/usuario -c "Descripción del usuario" usuario
+   passwd usuario
+   ```
+
+   Para comprobar que los usuarios se crearon correctamente, podemos consultar el contenido del archivo `/etc/passwd`, que almacena la información básica de todas las cuentas de usuario del sistema.
+   Para filtrar y ver solo los usuarios específicos que creamos, usamos el siguiente comando:
+
+   ```bash
+   grep nombre_usuario /etc/passwd
+   ```
+
+   O, consultando todos los usuarios que usen el directorio de `/usuarios`
+
+   ```bash
+   grep "/usuarios" /etc/passwd
+   ```
+
+
+   - What is the file system? Which one did you use during installation? What are its characteristics?
+   ## Sistema de archivos en Slackware y NetBSD
+   Para identificar el sistema de archivos montado en `/` en cada sistema operativo, utilizamos el siguiente comando:
+   ```bash
+   mount | grep "on / "
+   ```
+   ## Slackware
+   ![Sistema de archivos en Slackware](img/slackware10.png)
+
+   * **Sistema de archivos:** `ext4`
+   * **Características principales:**
+      * Alta estabilidad y madurez en sistemas Linux.
+      * Soporte de *journaling* para recuperación rápida en caso de fallos.
+      * Optimizado para manejar archivos y volúmenes de gran tamaño.
+      * Compatibilidad con atributos extendidos y permisos avanzados.
+      * Eficiencia en operaciones de lectura y escritura.
+   ## NetBSD
+   ![Sistema de archivos en NetBSD](img/netbsd13.png)
+   * **Sistema de archivos:** `FFSv2` (Fast File System Version 2)
+   * **Características principales:**
+      * Optimizado para alta velocidad de lectura y escritura en sistemas BSD.
+      * Soporte de *journaling* mediante **WAPBL** (Write Ahead Physical Block Logging).
+      * Mejor manejo de grandes bloques de datos y particiones extensas.
+      * Alta fiabilidad, ideal para servidores y entornos críticos.
+      * Diseño sólido inspirado en la filosofía Unix tradicional.
+
+   - Create two groups: ”Accounting” and ”IT.”
+   ## Creación de grupos de usuarios en Slackware y NetBSD 
+   Para crear grupos de usuarios en ambos sistemas, utilizamos el comando:
+   ```bash
+   groupadd nombre_del_grupo
+   ```
+   Donde `nombre_del_grupo` es el nombre que deseas asignar. 
+   El comando `groupadd` permite algunas opciones importantes, como:
+   * `-g GID`: especificar manualmente un **ID de grupo** en lugar de dejar que el sistema lo asigne automáticamente.
+   * `-r`: crear un **grupo del sistema** (GID bajo 1000, en muchos sistemas).
+
+   - The first two users should belong exclusively to the ”Accounting” group, while the other two should be part of the ”IT” group.
+   ## Asignación de grupos a usuarios en Slackware y NetBSD 
+   Una vez creados los grupos, debemos asignar los usuarios a su grupo correspondiente.  
+   Utilizamos el comando:
+   ```bash
+   usermod -g nombre_del_grupo nombre_del_usuario
+   ```
+   Donde:
+   - `-g` define el **grupo principal** del usuario.
+   - `nombre_del_grupo` es el nombre del grupo (por ejemplo, `Accounting` o `IT`).
+   - `nombre_del_usuario` es el nombre del usuario que vamos a asociar.
+   
+   Para consultar el grupo al que pertenece un usuario lo podemos hacer con:
+   ```bash
+   groups nombre_del_usuario
+   ```
 
 * What do ”Bridge Mode” and ”NAT Mode” mean? What IP address was assigned
 to the machine?
