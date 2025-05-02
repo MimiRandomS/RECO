@@ -9,10 +9,9 @@ show_menu() {
     echo -e "\e[1;33m║ 1) Ver interfaces de red                         ║\e[0m"
     echo -e "\e[1;33m║ 2) Ver tabla de rutas                            ║\e[0m"
     echo -e "\e[1;33m║ 3) Ver tráfico de red                            ║\e[0m"
-    echo -e "\e[1;32m║ 4) Ver detalles físicos                          ║\e[0m"
-    echo -e "\e[1;32m║ 5) Capturar paquetes                             ║\e[0m"
-    echo -e "\e[1;32m║ 6) Mostrar trafico                               ║\e[0m"
-    echo -e "\e[1;31m║ 7) Salir                                         ║\e[0m"
+    echo -e "\e[1;32m║ 4) Capturar paquetes                             ║\e[0m"
+    echo -e "\e[1;32m║ 5) Mostrar trafico                               ║\e[0m"
+    echo -e "\e[1;31m║ 6) Salir                                         ║\e[0m"
     echo -e "\e[1;36m╚══════════════════════════════════════════════════╝\e[0m"
     echo -e "Seleccione una opción: "
 }
@@ -119,9 +118,8 @@ logic() {
             1) func_show_interfaces ;;
             2) func_show_routes ;;
             3) func_show_traffic ;;
-            4) func_show_ethtool ;;
-            5) func_show_packages ;;
-            6) func_show_systat_ifstat ;;
+            4) func_show_packages ;;
+            5) func_show_systat_ifstat ;;
             7) func_exit ;;
             *) echo -e "Opción no válida." ;;
         esac
@@ -147,15 +145,6 @@ func_show_routes() {
 func_show_traffic() {
     echo ">>> Tráfico de red por interfaz:"
     netstat -i
-    echo ""
-    read -p "Presiona Enter para continuar..."
-}
-
-func_show_ethtool() {
-    echo -n "Introduce el nombre de la interfaz (ej. eth0): "
-    read interfaz
-    echo ">>> Detalles de la interfaz $interfaz:"
-    ethtool "$interfaz"
     echo ""
     read -p "Presiona Enter para continuar..."
 }
