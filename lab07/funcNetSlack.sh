@@ -11,7 +11,8 @@ show_menu() {
     echo -e "\e[1;33m║ 3) Ver tráfico de red                            ║\e[0m"
     echo -e "\e[1;32m║ 4) Ver detalles físicos                          ║\e[0m"
     echo -e "\e[1;32m║ 5) Capturar paquetes                             ║\e[0m"
-    echo -e "\e[1;31m║ 6) Salir                                         ║\e[0m"
+    echo -e "\e[1;32m║ 6) Mostrar puerto en uso                         ║\e[0m"
+    echo -e "\e[1;31m║ 7) Salir                                         ║\e[0m"
     echo -e "\e[1;36m╚══════════════════════════════════════════════════╝\e[0m"
     echo -e "Seleccione una opción: "
 }
@@ -120,7 +121,8 @@ logic() {
             3) func_show_traffic ;;
             4) func_show_ethtool ;;
             5) func_show_packages ;;
-            6) func_exit ;;
+            6) func_show_ports ;;
+            7) func_exit ;;
             *) echo -e "Opción no válida." ;;
         esac
         echo -e "\nPresione Enter para continuar..."
@@ -162,6 +164,44 @@ func_show_packages() {
     echo ">>> Mostrando paquetes en tiempo real (presiona Ctrl+C para salir)..."
     tcpdump -i "$interfaz"
 }
+
+func_show_ports() {
+    if ! command -v lsof >/dev/null 2>&1; then
+        echo "Error: lsof no está instalado."
+        exit 1
+    fi
+
+    echo "---------------------------------------------"
+    echo "|  PUERTO  |   PROTOCOLO   |     SERVICIO    |"
+    echo "---------------------------------------------"
+    echo "|   22     |     TCP       |     SSH         |"
+    echo "|   25     |     TCP       |     SMTP        |"
+    echo "|   53     |     TCP/UDP   |     DNS         |"
+    echo "|   80     |     TCP       |     HTTP        |"
+    echo "|  110     |     TCP       |     POP3        |"
+    echo "|  143     |     TCP       |     IMAP        |"
+    echo "|  443     |     TCP       |     HTTPS       |"
+    echo "|  631     |     TCP       |     IPP (CUPS)  |"
+    echo "| 3306     |     TCP       |     MySQL       |"
+    echo "| 5432     |     TCP       |     PostgreSQL  |"
+    echo "| 6379     |     TCP       |     Redis       |"
+    echo "---------------------------------------------"
+    echo
+
+    read -p "Introduce el número de puerto a verificar: " PORT
+    echo
+
+    RESULT=$(lsof -i :$PORT 2>/dev/null)
+
+    if [ -n "$RESULT" ]; then
+        echo "Puerto $PORT está ABIERTO."
+        echo "Servicio(s) usando el puerto:"
+        echo "$RESULT" | awk 'NR==1 || NR>1 { print $1, $2, $9 }'
+    else
+        echo "Puerto $PORT está CERRADO o no se puede determinar el servicio."
+    fi
+}
+
 
 func_exit(){
     ascci_art_2
