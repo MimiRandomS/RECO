@@ -188,7 +188,8 @@ func_show_ports() {
     echo "---------------------------------------------"
     echo
 
-    read -p "Introduce el número de puerto a verificar: " PORT
+    echo "Introduce el número de puerto a verificar: \c"
+    read PORT
     echo
 
     RESULT=$(lsof -i :$PORT 2>/dev/null)
